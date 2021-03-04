@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 
+const dateFormat = require('../utils/dateFormat');
+
 //So for the most part, this feels a lot like Sequelize. We essentially create a schema, using the Schema constructor we imported from Mongoose, and define the fields with specific data types. We don't have to define the fields, as MongoDB will allow the data anyway, but for for clarity and usability, we should regulate what the data will look like.
 
 // See how we don't have to use special imported data types for the type definitions? Using MongoDB and Mongoose, we simply instruct the schema that this data will adhere to the built-in JavaScript data types, including strings, Booleans, numbers, and so on.
@@ -18,7 +20,11 @@ const PizzaSchema = new Schema({
     },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
+      //In programming, a getter is typically a special type of function that takes the stored data you are looking to retrieve and modifies or formats it upon return. Think of it like middleware for your data!
+
+      // To use a getter in Mongoose, we just need to add the key get to the field we are looking to use it with in the schema. Just like a virtual, the getter will transform the data before it gets to the controller(s)
+      get: (createdAtVal)=> dateFormat(createdAtVal)
     },
     size: {
       type: String,
@@ -37,8 +43,10 @@ const PizzaSchema = new Schema({
     ]
   },
   {
+    //we'll need to tell the Mongoose model that it should use any virtual and getter function we've specified
     toJSON: {
       virtuals: true,
+      getters: true
     },
     //We set id to false because this is a virtual that Mongoose returns, and we don’t need it.
     id:false

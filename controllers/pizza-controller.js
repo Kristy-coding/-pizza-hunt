@@ -33,8 +33,18 @@ const pizzaController = {
 
   // get all pizzas 
   //The first method, getAllPizza(), will serve as the callback function for the GET /api/pizzas route. It uses the Mongoose .find() method, much like the Sequelize .findAll() method
+  //Even though the pizza stored the comment, all we can see is the comment _id. Sound familiar? We also ran into this issue with SQL. There, we joined two tables to resolve the problem, but in MongoDB we'll populate a field. To populate a field, just chain the .populate() method onto your query, passing in an object with the key path plus the value of the field you want populated
   getAllPizza(req,res){
       Pizza.find({})
+      .populate({
+        // we want to populat the comments field on the pizza model 
+        path: 'comments',
+        //Note that we also used the select option inside of populate(), so that we can tell Mongoose that we don't care about the __v field on comments either. The minus sign - in front of the field indicates that we don't want it to be returned. If we didn't have it, it would mean that it would return only the __v field
+        select: '-__v'
+      })
+      .select('-__v')
+      //Lastly, we should set up the query so that the newest pizza returns first. Mongoose has a .sort() method to help with this. After the .select() method, use .sort({ _id: -1 }) to sort in DESC order by the _id value. This gets the newest pizza because a timestamp value is hidden somewhere inside the MongoDB ObjectId
+      .sort({ _id: -1 })
       .then(dbPizzaData => res.json(dbPizzaData))
       .catch(err=>{
           res.status(400).json(err);
@@ -44,6 +54,11 @@ const pizzaController = {
   //The second method, .getPizzaById(), uses the Mongoose .findOne() method to find a single pizza by its _id. Instead of accessing the entire req, we've destructured params out of it, because that's the only data we need for this request to be fulfilled
   getPizzaById({ params }, res) {
       Pizza.findOne({ _id: params.id })
+        .populate({
+          path: 'comments',
+         select: '-__v'
+        })
+        .select('-__v')
         .then(dbPizzaData => {
             // if no pizza is found, send 4040
             if(!dbPizzaData) {
