@@ -64,8 +64,9 @@ const PizzaSchema = new Schema({
 //To do so, you'll need to add the toJSON property to the schema options
 
 // this virtual gets the length of the comment array 
+//Here we're using the .reduce() method to tally up the total of every comment with its replies. In its basic form, .reduce() takes two parameters, an accumulator and a currentValue. Here, the accumulator is total, and the currentValue is comment. As .reduce() walks through the array, it passes the accumulating total and the current value of comment into the function, with the return of the function revising the total for the next iteration through the array.
 PizzaSchema.virtual('commentCount').get(function() {
-  return this.comments.length;
+  return this.comments.reduce((total, comment) => total + comment.replies.length + 1, 0);
 });
 
 //Now we need to actually create the model to get the prebuilt methods that Mongoose provides. Let's add the following code to create the model and export it at the bottom of Pizza.js:

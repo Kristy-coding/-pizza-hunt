@@ -120,3 +120,5 @@ deletePizza({ params }, res) {
 //So now that we have the five main CRUD methods for the /api/pizzas endpoint routes, let's create the routes and hook these methods up to them!
 
 module.exports = pizzaController;
+
+
