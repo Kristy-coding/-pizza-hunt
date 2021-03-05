@@ -68,6 +68,8 @@ const handlePizzaSubmit = event => {
     })
     .catch(err => {
       console.log(err);
+      // this will save the data in indexDB if the request cannot be made to the online database 
+      saveRecord(formData);
     });
 
 };
