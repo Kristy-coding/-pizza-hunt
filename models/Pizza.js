@@ -13,10 +13,15 @@ const dateFormat = require('../utils/dateFormat');
 
 const PizzaSchema = new Schema({
     pizzaName: {
-      type: String
+      type: String,
+      required: true,
+      //trim option that's been added, which works just like the JavaScript .trim() method and removes white space before and after the input string. You'll find that useful when working with username and password data
+      trim: true
     },
     createdBy: {
-      type: String
+      type: String,
+      required: true,
+      trim: true
     },
     createdAt: {
       type: Date,
@@ -28,6 +33,11 @@ const PizzaSchema = new Schema({
     },
     size: {
       type: String,
+      required: true,
+      //In this example, the enum option stands for enumerable, a popular term in web development that refers to a set of data that can be iterated over—much like using the for...in loop to iterate through an object.
+
+      //With this validation option in place, we provide an array of options that this size field will accept. If a user attempts to enter a pizza size not listed—for example, a size value of "Super Mega Large"—the validation simply won't allow it
+      enum: ['Personal', 'Small', 'Medium', 'Large', 'Extra Large'],
       default: 'Large'
     },
     toppings: [],
